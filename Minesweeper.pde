@@ -1,7 +1,9 @@
 import de.bezier.guido.*;
-//Declare and initialize constants NUM_ROWS and NUM_COLS = 20
-private MSButton[][] buttons; //2d array of minesweeper buttons
-private ArrayList <MSButton> mines; //ArrayList of just the minesweeper buttons that are mined
+int NUM_ROWS =5; 
+int NUM_COLS=5; 
+private MSButton[][] buttons= new MSButton[NUM_ROWS][NUM_COLS]; //2d array of minesweeper buttons
+private ArrayList <MSButton> mines = new ArrayList<MSButton>(); //ArrayList of just the minesweeper buttons that are mined
+
 
 void setup ()
 {
@@ -12,14 +14,22 @@ void setup ()
     Interactive.make( this );
     
     //your code to initialize buttons goes here
-    
+    for (int i = 0 ; i<NUM_ROWS;i++){
+  for ( int k = 0 ; k<NUM_COLS;k++){
+    buttons[i][k]=new MSButton(i,k);
+  }  
+  } 
     
     
     setMines();
 }
 public void setMines()
 {
-    //your code
+    int ranrow=(int)(Math.random()*(buttons.length)); 
+    int rancol=(int)(Math.random()*(buttons[0].length)); 
+    if (!mines.contains(buttons[ranrow][rancol])){
+      mines.add(buttons[ranrow][rancol]); 
+    } 
 }
 
 public void draw ()
@@ -43,13 +53,23 @@ public void displayWinningMessage()
 }
 public boolean isValid(int r, int c)
 {
-    //your code here
-    return false;
+    return r>0 && r<NUM_ROWS && c>0 && c<NUM_COLS;
+    
 }
 public int countMines(int row, int col)
 {
     int numMines = 0;
-    //your code here
+  
+    for (int i = row-1;i<=row+1;i++){
+      for ( int k=col-1;k<col+1;k++){
+        if (isValid(i,k)){
+          if (mines.contains(buttons[i][k])) {
+          numMines+=1;
+        } } 
+        
+      } 
+    } 
+    System.out.println(numMines);  
     return numMines;
 }
 public class MSButton
@@ -61,8 +81,8 @@ public class MSButton
     
     public MSButton ( int row, int col )
     {
-        // width = 400/NUM_COLS;
-        // height = 400/NUM_ROWS;
+         width = 400/NUM_COLS;
+         height = 400/NUM_ROWS;
         myRow = row;
         myCol = col; 
         x = myCol*width;
@@ -76,14 +96,25 @@ public class MSButton
     public void mousePressed () 
     {
         clicked = true;
-        //your code here
+        if ( mouseButton==RIGHT && clicked==true){
+          flagged=false;
+          clicked=false;
+        else if (mouseButton==RIGHT && clicked==false){
+          flagged=true;
+          clicked=true;
+       // }else{flagged=flagged;
+     // clicked=clicked; } 
+ 
+        } if ( mouseButton==LEFT) {
+          
+        } 
     }
     public void draw () 
     {    
         if (flagged)
             fill(0);
-        // else if( clicked && mines.contains(this) ) 
-        //     fill(255,0,0);
+         else if( clicked && mines.contains(this) ) 
+             fill(255,0,0);
         else if(clicked)
             fill( 200 );
         else 
